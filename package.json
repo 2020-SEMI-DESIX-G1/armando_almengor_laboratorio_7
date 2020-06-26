@@ -5,8 +5,14 @@
     "main": "app.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "mongo:start": "docker run --rm -p=27017:27017 --env-file=./.env --name=dessoftix--lab7--mongo -d centos/mongodb-32-centos7",
+        "mongo:start": "docker run --rm -p=27017:27017 --env-file=./.env --network=lab7 --name=dessoftix--lab7--mongo -d centos/mongodb-32-centos7",
+        "lab7:build": "docker build -t lab7/nodejs .",
+        "lab7:start": "docker run --rm -p=3000:3000 --env-file=./.env --network=lab7 --name=dessoftix--lab7--nodejs -d lab7/nodejs",
+        "lab7:stop": "docker stop dessoftix--lab7--nodejs",
         "mongo:stop": "docker stop dessoftix--lab7--mongo",
+        "docker:stop-all": "docker stop $(docker ps -aq)",
+        "docker:examinate-db": "docker exec -it dessoftix--lab7--mongo sh",
+        "docker:examinate-lab7": "docker exec -it dessoftix--lab7--nodejs sh",  
         "start": "nodemon app.js"
     },
     "repository": {

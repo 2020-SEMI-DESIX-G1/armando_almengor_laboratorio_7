@@ -59,14 +59,13 @@ app.put('/api/students/:id', async (req, res) => {
 //delete
 app.delete('/api/students/:id', async (req, res) => {
     try {
-        const students = await Students.findByIdAndRemove(req.params.id);
+        const students = await Students.findByIdAndRemove(req.params.id,{useFindAndModify: false});
         res.json(students);
     } catch (error) {
         console.log(error);
         res.json({});
     }
 });
-
 
 connectDb().then(() => {
     app.listen(PORT, () => {
