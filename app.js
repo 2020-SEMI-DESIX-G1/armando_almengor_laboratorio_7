@@ -4,37 +4,69 @@ const bodyParser = require('body-parser');
 const app = express();
 
 const connectDb = require('./dbConfig');
-const Estudiantes = require('./models/students');
+const Students = require('./models/students');
 
 const PORT = 3000;
-
 
 // Intermediarios
 app.use(bodyParser.json());
 
-
 // Controladores
-app.get('/api/estudiantes/', async (req, res) => {
-    const estudiantes = await Estudiantes.find().select('nombre edad');
+
+//root
+app.get('/', async (req, res) => {
+    res.send("Laboratorio No.7 - Armando Almengor");
+});
+
+//select all
+app.get('/api/students/', async (req, res) => {
+    const students = await Students.find().select('nombre edad');
     res.json({
-        estudiantes,
-        cantidad: estudiantes.length
+        students,
+        Total: students.length
     });
 });
-app.post('/api/estudiantes/', async (req, res) => {
+
+//create new
+app.post('/api/students/', async (req, res) => {
     const { nombre, edad } = req.body;
-    await Estudiantes.create({ nombre, edad });
+    await Students.create({ nombre, edad });
     res.json({ nombre, edad });
 });
-app.get('/api/estudiantes/:id', async (req, res) => {
+
+//select by id
+app.get('/api/students/:id', async (req, res) => {
     try {
-        const estudiante = await Estudiantes.findById(req.params.id).select('nombre edad');
-        res.json(estudiante);
+        const students = await Students.findById(req.params.id).select('nombre edad');
+        res.json(students);
     } catch (error) {
         console.log(error);
         res.json({});
     }
 });
+
+//update
+app.put('/api/students/:id', async (req, res) => {
+    try {
+        const students = await Students.findByIdAndUpdate(req.params.id,req.body,{useFindAndModify: false});
+        res.json(students);
+    } catch (error) {
+        console.log(error);
+        res.json({});
+    }
+});
+
+//delete
+app.delete('/api/students/:id', async (req, res) => {
+    try {
+        const students = await Students.findByIdAndRemove(req.params.id);
+        res.json(students);
+    } catch (error) {
+        console.log(error);
+        res.json({});
+    }
+});
+
 
 connectDb().then(() => {
     app.listen(PORT, () => {
